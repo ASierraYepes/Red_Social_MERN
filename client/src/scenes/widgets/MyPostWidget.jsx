@@ -6,6 +6,7 @@ import {
   ImageOutlined,
   MicOutlined,
   MoreHorizOutlined,
+  SendRounded,
 } from "@mui/icons-material";
 import {
   Box,
@@ -62,7 +63,7 @@ const MyPostWidget = ({ picturePath }) => {
       <FlexBetween gap="1.5rem">
         <UserImage image={picturePath} />
         <InputBase
-          placeholder="What's on your mind..."
+          placeholder="Escribe lo que sea..."
           onChange={(e) => setPost(e.target.value)}
           value={post}
           sx={{
@@ -96,7 +97,7 @@ const MyPostWidget = ({ picturePath }) => {
                 >
                   <input {...getInputProps()} />
                   {!image ? (
-                    <p>Add Image Here</p>
+                    <p>Agregar imagen</p>
                   ) : (
                     <FlexBetween>
                       <Typography>{image.name}</Typography>
@@ -127,7 +128,7 @@ const MyPostWidget = ({ picturePath }) => {
             color={mediumMain}
             sx={{ "&:hover": { cursor: "pointer", color: medium } }}
           >
-            Image
+            Imagen
           </Typography>
         </FlexBetween>
 
@@ -140,7 +141,7 @@ const MyPostWidget = ({ picturePath }) => {
 
             <FlexBetween gap="0.25rem">
               <AttachFileOutlined sx={{ color: mediumMain }} />
-              <Typography color={mediumMain}>Attachment</Typography>
+              <Typography color={mediumMain}>Adjunto</Typography>
             </FlexBetween>
 
             <FlexBetween gap="0.25rem">
@@ -163,7 +164,7 @@ const MyPostWidget = ({ picturePath }) => {
             borderRadius: "3rem",
           }}
         >
-          POST
+          <SendRounded />
         </Button>
       </FlexBetween>
     </WidgetWrapper>
