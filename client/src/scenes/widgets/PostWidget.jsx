@@ -3,8 +3,9 @@ import {
   FavoriteBorderOutlined,
   FavoriteOutlined,
   ShareOutlined,
+  AddCommentRounded,
 } from "@mui/icons-material";
-import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, Divider, IconButton, Typography, useTheme, InputBase, Button } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
@@ -24,6 +25,7 @@ const PostWidget = ({
   comments,
 }) => {
   const [isComments, setIsComments] = useState(false);
+  const [commentPost, setCommentPost] = useState("");
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
   const loggedInUserId = useSelector((state) => state.user._id);
@@ -45,6 +47,32 @@ const PostWidget = ({
     });
     const updatedPost = await response.json();
     dispatch(setPost({ post: updatedPost }));
+  };
+
+  const patchComment = async () => {
+
+    console.log("postId: ",postId);
+    console.log("commentPost: ",commentPost);
+
+    try {
+      const response = await fetch(`http://localhost:3001/posts/${postId}/${commentPost}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Error al publicar comentario.");
+      }
+  
+      const data = await response.json();
+      dispatch(setPost({ post: data }));
+      setCommentPost("");
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
   };
 
   return (
@@ -93,7 +121,34 @@ const PostWidget = ({
         </IconButton>
       </FlexBetween>
       {isComments && (
+        
         <Box mt="0.5rem">
+          <FlexBetween gap="1.5rem">
+            <InputBase
+              placeholder="Comenta lo que sea..."
+              onChange={(e) => setCommentPost(e.target.value)}
+              value={commentPost}
+              sx={{
+                width: "100%",
+                backgroundColor: palette.neutral.light,
+                borderRadius: "2rem",
+                padding: "0.2rem 2rem",
+              }}
+              autoFocus={true}
+            />
+            <Button
+              disabled={!commentPost}
+              onClick={patchComment}
+              sx={{
+                color: palette.background.alt,
+                backgroundColor: palette.primary.main,
+                borderRadius: "3rem",
+              }}
+            >
+              <AddCommentRounded />
+            </Button>
+          </FlexBetween>
+          <br />
           {comments.map((comment, i) => (
             <Box key={`${name}-${i}`}>
               <Divider />
@@ -101,7 +156,7 @@ const PostWidget = ({
                 {comment}
               </Typography>
             </Box>
-          ))}
+          )).reverse()}
           <Divider />
         </Box>
       )}

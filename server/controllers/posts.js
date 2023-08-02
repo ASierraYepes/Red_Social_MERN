@@ -53,7 +53,6 @@ export const likePost = async (req, res) => {
     const { userId } = req.body;
     const post = await Post.findById(id);
     const isLiked = post.likes.get(userId);
-
     if (isLiked) {
       post.likes.delete(userId);
     } else {
@@ -71,3 +70,21 @@ export const likePost = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
+
+export const commentPost = async (req, res) => {
+  try {
+    const { id, postComment } = req.params;
+
+    const post = await Post.findById(id);
+    
+    post.comments.push(postComment);
+
+    const savePost = await post.save();
+    
+    res.status(200).json(savePost);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+};
+
+  //-------------------------------------------------
