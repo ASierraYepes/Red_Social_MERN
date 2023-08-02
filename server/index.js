@@ -60,10 +60,10 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    app.listen(PORT, () => console.log(`Escuchando puerto: ${PORT}`));
+    app.listen(PORT, () => console.log(`Escuchando Puerto: ${PORT}`));
 
     /* ADD DATA ONE TIME */
     // User.insertMany(users);
     // Post.insertMany(posts);
   })
-  .catch((error) => console.log(`${error} No conectado`));
+  .catch((error) => console.log(`${error} No esta conectado`));
