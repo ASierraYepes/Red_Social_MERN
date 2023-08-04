@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {
   ChatBubbleOutlineOutlined,
   FavoriteBorderOutlined,
@@ -5,7 +6,8 @@ import {
   ShareOutlined,
   AddCommentRounded,
 } from "@mui/icons-material";
-import { Box, Divider, IconButton, Typography, useTheme, InputBase, Button } from "@mui/material";
+import { Box, Divider, IconButton, Typography, useTheme, InputBase, Button, Snackbar } from "@mui/material";
+import MuiAlert from '@mui/material/Alert';
 import FlexBetween from "components/FlexBetween";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
@@ -32,6 +34,8 @@ const PostWidget = ({
   const loggedInUserId = useSelector((state) => state.user._id);
   const isLiked = Boolean(likes[loggedInUserId]);
   const likeCount = Object.keys(likes).length;
+  const [openSnackbarSuccess, setOpenSnackbarSuccess] = useState(false);
+  const [openSnackbarError, setOpenSnackbarError] = useState(false);
 
   const { palette } = useTheme();
   const main = palette.neutral.main;
@@ -39,7 +43,6 @@ const PostWidget = ({
 
   const patchLike = async () => {
     const response = await fetch(`${URL}/posts/${postId}/like`, {
-      // const response = await fetch(`${URL}/posts/${postId}/like`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -52,10 +55,6 @@ const PostWidget = ({
   };
 
   const patchComment = async () => {
-
-    console.log("postId: ",postId);
-    console.log("commentPost: ",commentPost);
-
     try {
       const response = await fetch(`${URL}/posts/${postId}/${commentPost}`, 
       {
@@ -66,16 +65,41 @@ const PostWidget = ({
         },
       });
   
-      if (!response.ok) {
-        throw new Error("Error al publicar comentario.");
-      }
-  
       const data = await response.json();
       dispatch(setPost({ post: data }));
       setCommentPost("");
+      showSnackbarSuccess();
+
     } catch (error) {
+      showSnackbarError();
       console.error("Error:", error.message);
     }
+  };
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  const showSnackbarSuccess = () => {
+    setOpenSnackbarSuccess(true);
+  };
+
+  const handleCloseSnackbarSuccess = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+      setOpenSnackbarSuccess(false);
+  };
+
+  const showSnackbarError = () => {
+    setOpenSnackbarError(true);
+  };
+
+  const handleCloseSnackbarError = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+      setOpenSnackbarError(false);
   };
 
   return (
@@ -150,6 +174,24 @@ const PostWidget = ({
             >
               <AddCommentRounded />
             </Button>
+            <Snackbar
+              open={openSnackbarSuccess}
+              autoHideDuration={3000}
+              onClose={handleCloseSnackbarSuccess}
+            >
+              <Alert onClose={handleCloseSnackbarSuccess} severity="success" color="info" sx={{ width: '100%' }}>
+                Comentario creado!
+              </Alert>
+            </Snackbar>
+            <Snackbar
+              open={openSnackbarError}
+              autoHideDuration={3000}
+              onClose={handleCloseSnackbarError}
+            >
+              <Alert onClose={handleCloseSnackbarError} severity="error" sx={{ width: '100%' }}>
+                Error al crear el comentario!
+              </Alert>
+            </Snackbar>
           </FlexBetween>
           <br />
           {comments.map((comment, i) => (

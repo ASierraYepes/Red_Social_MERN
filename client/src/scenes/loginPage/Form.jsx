@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useState } from "react";
 import {
   Box,
@@ -6,7 +7,9 @@ import {
   useMediaQuery,
   Typography,
   useTheme,
+  Snackbar,
 } from "@mui/material";
+import MuiAlert from '@mui/material/Alert';
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -55,6 +58,9 @@ const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
+  const [openSnackbarLoginError, setOpenSnackbarLoginError] = useState(false);
+  const [openSnackbarRegisterSuccess, setOpenSnackbarRegisterSuccess] = useState(false);
+  const [openSnackbarRegisterError, setOpenSnackbarRegisterError] = useState(false);
 
   const register = async (values, onSubmitProps) => {
     // this allows us to send form info with image
@@ -64,17 +70,23 @@ const Form = () => {
     }
     formData.append("picturePath", values.picture.name);
 
-    const savedUserResponse = await fetch(`${URL}/auth/register`,
-      {
-        method: "POST",
-        body: formData,
+    try {
+      const savedUserResponse = await fetch(`${URL}/auth/register`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const savedUser = await savedUserResponse.json();
+      onSubmitProps.resetForm();
+  
+      if (savedUser) {
+        // setPageType("login");
+        showSnackbarRegisterSuccess();
       }
-    );
-    const savedUser = await savedUserResponse.json();
-    onSubmitProps.resetForm();
-
-    if (savedUser) {
-      setPageType("login");
+    } catch (error) {
+      showSnackbarRegisterError();
+      console.error("Error:", error.message);
     }
   };
 
@@ -85,7 +97,12 @@ const Form = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
+    console.log(loggedInResponse);
     
+    if (loggedInResponse.ok === false) {
+      showSnackbarLoginError();
+    }
+
     const loggedIn = await loggedInResponse.json();
     onSubmitProps.resetForm();
     if (loggedIn) {
@@ -97,11 +114,49 @@ const Form = () => {
       );
       navigate("/home");
     }
+    
   };
 
   const handleFormSubmit = async (values, onSubmitProps) => {
     if (isLogin) await login(values, onSubmitProps);
     if (isRegister) await register(values, onSubmitProps);
+  };
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  const showSnackbarLoginError = () => {
+    setOpenSnackbarLoginError(true);
+  };
+
+  const handleCloseSnackbarLoginError = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+      setOpenSnackbarLoginError(false);
+  };
+
+  const showSnackbarRegisterSuccess = () => {
+    setOpenSnackbarRegisterSuccess(true);
+  };
+
+  const handleCloseSnackbarRegisterSuccess = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+      setOpenSnackbarRegisterSuccess(false);
+  };
+
+  const showSnackbarRegisterError = () => {
+    setOpenSnackbarRegisterError(true);
+  };
+
+  const handleCloseSnackbarRegisterError = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+      setOpenSnackbarRegisterError(false);
   };
 
   return (
@@ -233,7 +288,6 @@ const Form = () => {
               sx={{ gridColumn: "span 4" }}
             />
           </Box>
-
           {/* BUTTONS */}
           <Box>
             <Button
@@ -249,6 +303,41 @@ const Form = () => {
             >
               {isLogin ? "INICIAR" : "REGISTRO"}
             </Button>
+            {isLogin ? 
+            (
+            <>
+              <Snackbar
+                open={openSnackbarLoginError}
+                autoHideDuration={3000}
+                onClose={handleCloseSnackbarLoginError}
+              >
+                <Alert onClose={handleCloseSnackbarLoginError} severity="error" sx={{ width: '100%' }}>
+                  Usuario o contraseña incorrecta!
+                </Alert>
+              </Snackbar>
+            </>
+            ) : (
+            <>
+              <Snackbar
+                open={openSnackbarRegisterSuccess}
+                autoHideDuration={3000}
+                onClose={handleCloseSnackbarRegisterSuccess}
+              >
+                <Alert onClose={handleCloseSnackbarRegisterSuccess} severity="success" color="info" sx={{ width: '100%' }}>
+                  Registro exitoso!
+                </Alert>
+              </Snackbar>
+              <Snackbar
+                open={openSnackbarRegisterError}
+                autoHideDuration={3000}
+                onClose={handleCloseSnackbarRegisterError}
+              >
+                <Alert onClose={handleCloseSnackbarRegisterError} severity="error" sx={{ width: '100%' }}>
+                  Error al registrar!
+                </Alert>
+              </Snackbar>
+            </>
+            )}
             <Typography
               onClick={() => {
                 setPageType(isLogin ? "register" : "login");

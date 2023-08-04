@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {
   EditOutlined,
   DeleteOutlined,
@@ -17,7 +18,9 @@ import {
   Button,
   IconButton,
   useMediaQuery,
+  Snackbar,
 } from "@mui/material";
+import MuiAlert from '@mui/material/Alert';
 import FlexBetween from "components/FlexBetween";
 import Dropzone from "react-dropzone";
 import UserImage from "components/UserImage";
@@ -38,6 +41,8 @@ const MyPostWidget = ({ picturePath }) => {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const mediumMain = palette.neutral.mediumMain;
   const medium = palette.neutral.medium;
+  const [openSnackbarSuccess, setOpenSnackbarSuccess] = useState(false);
+  const [openSnackbarError, setOpenSnackbarError] = useState(false);
 
   const handlePost = async () => {
     const formData = new FormData();
@@ -47,17 +52,50 @@ const MyPostWidget = ({ picturePath }) => {
       formData.append("picture", image);
       formData.append("picturePath", image.name);
     }
+    try {
+      const response = await fetch(`${URL}/posts`, 
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
 
-    const response = await fetch(`${URL}/posts`, 
-    {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-    });
-    const posts = await response.json();
-    dispatch(setPosts({ posts }));
-    setImage(null);
-    setPost("");
+      const posts = await response.json();
+      dispatch(setPosts({ posts }));
+      setImage(null);
+      setPost("");
+      showSnackbarSuccess();
+      
+    } catch (error) {
+      showSnackbarError();
+      console.error("Error:", error.message);
+    }
+  };
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  const showSnackbarSuccess = () => {
+    setOpenSnackbarSuccess(true);
+  };
+
+  const handleCloseSnackbarSuccess = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+      setOpenSnackbarSuccess(false);
+  };
+
+  const showSnackbarError = () => {
+    setOpenSnackbarError(true);
+  };
+
+  const handleCloseSnackbarError = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+      setOpenSnackbarError(false);
   };
 
   return (
@@ -168,6 +206,24 @@ const MyPostWidget = ({ picturePath }) => {
         >
           <SendRounded />
         </Button>
+        <Snackbar
+              open={openSnackbarSuccess}
+              autoHideDuration={3000}
+              onClose={handleCloseSnackbarSuccess}
+            >
+              <Alert onClose={handleCloseSnackbarSuccess} severity="success" sx={{ width: '100%' }}>
+                Publicación exitosa!
+              </Alert>
+            </Snackbar>
+            <Snackbar
+              open={openSnackbarError}
+              autoHideDuration={3000}
+              onClose={handleCloseSnackbarError}
+            >
+              <Alert onClose={handleCloseSnackbarError} severity="error" sx={{ width: '100%' }}>
+                Error al Publicar!
+              </Alert>
+            </Snackbar>
       </FlexBetween>
     </WidgetWrapper>
   );
