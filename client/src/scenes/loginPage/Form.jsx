@@ -8,6 +8,8 @@ import {
   Typography,
   useTheme,
   Snackbar,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import MuiAlert from '@mui/material/Alert';
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
@@ -61,6 +63,7 @@ const Form = () => {
   const [openSnackbarLoginError, setOpenSnackbarLoginError] = useState(false);
   const [openSnackbarRegisterSuccess, setOpenSnackbarRegisterSuccess] = useState(false);
   const [openSnackbarRegisterError, setOpenSnackbarRegisterError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const register = async (values, onSubmitProps) => {
     // this allows us to send form info with image
@@ -91,6 +94,7 @@ const Form = () => {
   };
 
   const login = async (values, onSubmitProps) => {
+    setLoading(true);
     const loggedInResponse = await fetch(`${URL}/auth/login`, 
     {
       method: "POST",
@@ -114,7 +118,7 @@ const Form = () => {
       );
       navigate("/home");
     }
-    
+    setLoading(false);
   };
 
   const handleFormSubmit = async (values, onSubmitProps) => {
@@ -356,6 +360,12 @@ const Form = () => {
                 ? "¿No tienes una cuenta? Regístrate."
                 : "¿Ya tienes una cuenta? Inicia Sesión."}
             </Typography>
+            <Backdrop
+              sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={loading}
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
           </Box>
         </form>
       )}
