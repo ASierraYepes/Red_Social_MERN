@@ -6,7 +6,6 @@ import {
   GifBoxOutlined,
   ImageOutlined,
   MicOutlined,
-  MoreHorizOutlined,
   SendRounded,
 } from "@mui/icons-material";
 import {
@@ -162,18 +161,18 @@ const MyPostWidget = ({ picturePath }) => {
       <Divider sx={{ margin: "1.25rem 0" }} />
 
       <FlexBetween>
-        <FlexBetween gap="0.25rem" onClick={() => setIsImage(!isImage)}>
-          <ImageOutlined sx={{ color: mediumMain }} />
-          <Typography
-            color={mediumMain}
-            sx={{ "&:hover": { cursor: "pointer", color: medium } }}
-          >
-            Imagen
-          </Typography>
-        </FlexBetween>
-
+        
         {isNonMobileScreens ? (
           <>
+            <FlexBetween gap="0.25rem" onClick={() => setIsImage(!isImage)}>
+              <ImageOutlined sx={{ color: mediumMain }} />
+              <Typography
+                color={mediumMain}
+                sx={{ "&:hover": { cursor: "pointer", color: medium } }}
+              >
+                Imagen
+              </Typography>
+            </FlexBetween>
             <FlexBetween gap="0.25rem">
               <GifBoxOutlined sx={{ color: mediumMain }} />
               <Typography color={mediumMain}>Clip</Typography>
@@ -190,9 +189,23 @@ const MyPostWidget = ({ picturePath }) => {
             </FlexBetween>
           </>
         ) : (
-          <FlexBetween gap="0.25rem">
-            <MoreHorizOutlined sx={{ color: mediumMain }} />
-          </FlexBetween>
+          <>
+            <FlexBetween gap="0.25rem" onClick={() => setIsImage(!isImage)}>
+              <ImageOutlined sx={{ color: mediumMain }} />
+            </FlexBetween>
+
+            <FlexBetween gap="0.25rem">
+              <GifBoxOutlined sx={{ color: mediumMain }} />
+            </FlexBetween>
+
+            <FlexBetween gap="0.25rem">
+              <AttachFileOutlined sx={{ color: mediumMain }} />
+            </FlexBetween>
+
+            <FlexBetween gap="0.25rem">
+              <MicOutlined sx={{ color: mediumMain }} />
+            </FlexBetween>
+          </>
         )}
 
         <Button
