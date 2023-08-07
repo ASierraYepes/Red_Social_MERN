@@ -73,11 +73,14 @@ export const likePost = async (req, res) => {
 
 export const commentPost = async (req, res) => {
   try {
-    const { id, postComment } = req.params;
+    const { id } = req.params;
+    const { listComment } = req.body;
 
     const post = await Post.findById(id);
     
-    post.comments.push(postComment);
+    for (const itemComment of listComment) {
+      post.comments.push(itemComment);
+    }
 
     const savePost = await post.save();
     
@@ -86,5 +89,3 @@ export const commentPost = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
-
-  //-------------------------------------------------

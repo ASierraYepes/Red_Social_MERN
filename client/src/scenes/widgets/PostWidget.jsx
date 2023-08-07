@@ -12,6 +12,7 @@ import FlexBetween from "components/FlexBetween";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "state";
 import { URL } from "Url"
@@ -29,9 +30,12 @@ const PostWidget = ({
 }) => {
   const [isComments, setIsComments] = useState(false);
   const [commentPost, setCommentPost] = useState("");
+  const [listComment, setListComment] = useState([]);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const token = useSelector((state) => state.token);
   const loggedInUserId = useSelector((state) => state.user._id);
+  const user = useSelector((state) => state.user);
   const isLiked = Boolean(likes[loggedInUserId]);
   const likeCount = Object.keys(likes).length;
   const [openSnackbarSuccess, setOpenSnackbarSuccess] = useState(false);
@@ -55,19 +59,28 @@ const PostWidget = ({
   };
 
   const patchComment = async () => {
+
+    listComment.push({
+      userIdComment:`${user._id}`,
+      name:`${user.firstName} ${user.lastName}`,
+      message: `${commentPost}`
+    })
+
     try {
-      const response = await fetch(`${URL}/posts/${postId}/${commentPost}`, 
+      const response = await fetch(`${URL}/posts/${postId}`, 
       {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ listComment }),
       });
   
       const data = await response.json();
       dispatch(setPost({ post: data }));
       setCommentPost("");
+      setListComment([]);
       showSnackbarSuccess();
 
     } catch (error) {
@@ -197,8 +210,22 @@ const PostWidget = ({
           {comments.map((comment, i) => (
             <Box key={`${name}-${i}`}>
               <Divider />
+              <Typography
+                color={main}
+                variant="h7"
+                fontWeight="500"
+                sx={{
+                  "&:hover": {
+                    color: palette.primary.light,
+                    cursor: "pointer",
+                  },
+                }}
+                onClick={() => navigate(`/profile/${comment.userIdComment}`)}
+              >
+                {comment.name}
+              </Typography>
               <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>
-                {comment}
+                {comment.message}
               </Typography>
             </Box>
           )).reverse()}
