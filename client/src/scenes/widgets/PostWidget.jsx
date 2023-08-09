@@ -67,7 +67,7 @@ const PostWidget = ({
     })
 
     try {
-      const response = await fetch(`${URL}/posts/${postId}`, 
+      const response = await fetch(`${URL}/posts/${postId}/comment`, 
       {
         method: "PATCH",
         headers: {
