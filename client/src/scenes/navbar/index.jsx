@@ -74,7 +74,7 @@ const Navbar = () => {
             },
           }}
         >
-          AS Social
+          Social Dev
         </Typography>
         {isNonMobileScreens && (
           <FlexBetween
@@ -180,7 +180,7 @@ const Navbar = () => {
               <ListItemIcon>
                 <Settings fontSize="small" />
               </ListItemIcon>
-              Configuraciones
+              Ajustes y privacidad
             </MenuItem>
             <MenuItem onClick={() => dispatch(setLogout())}>
               <ListItemIcon>
