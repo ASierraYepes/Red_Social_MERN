@@ -179,7 +179,7 @@ const Form = () => {
         setFieldValue,
         resetForm,
       }) => (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) =>{ e.preventDefault(); handleSubmit(); }}>
           <Box
             display="grid"
             gap="30px"
