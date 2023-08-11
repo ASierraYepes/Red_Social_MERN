@@ -13,7 +13,7 @@ const LoginPage = () => {
         textAlign="center"
       >
         <Typography fontWeight="bold" fontSize="32px" color="primary">
-          AS Social
+          Social Dev
         </Typography>
       </Box>
 
@@ -25,7 +25,7 @@ const LoginPage = () => {
         backgroundColor={theme.palette.background.alt}
       >
         <Typography fontWeight="500" variant="h5" sx={{ mb: "1.5rem" }}>
-          Bienvenidos a AS Social, ¡La red social para desarrolladores!
+          Bienvenidos a Social Dev, ¡La red social para desarrolladores!
         </Typography>
         <Form />
       </Box>
