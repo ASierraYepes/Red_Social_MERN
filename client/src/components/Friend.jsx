@@ -70,16 +70,25 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
           sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
         >
           {isFriend ? (
-            <Tooltip title= "Eliminar">
+            <Tooltip title= "Eliminar colega">
               <PersonRemoveOutlined sx={{ color: primaryDark }} />
             </Tooltip>
           ) : (
-            <Tooltip title= "Agregar">
+            <Tooltip title= "Agregar colega">
               <PersonAddOutlined sx={{ color: primaryDark }} />
             </Tooltip>
           )}
         </IconButton>
-      ) : null}
+      ) : (
+        // <IconButton 
+        //   sx={{ backgroundColor: primaryLight, padding: "0.6rem" }}
+        // >
+        //   <Tooltip title= "Eliminar publicación">
+        //     <CloseOutlined sx={{ color: primaryDark }} />
+        //   </Tooltip>
+        // </IconButton>
+        null
+      )}
     </FlexBetween>
   );
 };
