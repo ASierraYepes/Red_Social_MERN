@@ -87,7 +87,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
         //     <CloseOutlined sx={{ color: primaryDark }} />
         //   </Tooltip>
         // </IconButton>
-        null
+        undefined
       )}
     </FlexBetween>
   );
