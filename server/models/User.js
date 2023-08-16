@@ -1,5 +1,18 @@
 import mongoose from "mongoose";
 
+const SkillsSchema = new mongoose.Schema(
+  {
+    technology: {
+      type: String,
+      required: true,
+    },
+    percentage: {
+      type: String,
+      required: true,
+    },
+  }
+)
+
 const UserSchema = new mongoose.Schema(
   {
     firstName: {
@@ -33,6 +46,11 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+    skills:{
+      type: [SkillsSchema],
+      default: [],
+    },
+    aboutMe: String,
     location: String,
     occupation: String,
     viewedProfile: Number,
