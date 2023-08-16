@@ -71,7 +71,7 @@ const PostWidget = ({
     })
 
     try {
-      const response = await fetch(`${URL}/posts/${postId}`, 
+      const response = await fetch(`${URL}/posts/${postId}/comment`, 
       {
         method: "PATCH",
         headers: {
@@ -81,11 +81,12 @@ const PostWidget = ({
         body: JSON.stringify({ listComment }),
       });
   
-      const data = await response.json();
-      dispatch(setPost({ post: data }));
+      const updatedPost = await response.json();
+      dispatch(setPost({ post: updatedPost }));
       setCommentPost("");
       setListComment([]);
       showSnackbarSuccess();
+      console.log(updatedPost)
 
     } catch (error) {
       showSnackbarError();
