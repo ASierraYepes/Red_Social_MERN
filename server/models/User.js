@@ -50,7 +50,10 @@ const UserSchema = new mongoose.Schema(
       type: [SkillsSchema],
       default: [],
     },
-    aboutMe: String,
+    aboutMe:{
+      type: String,
+      default: "",
+    },
     location: String,
     occupation: String,
     viewedProfile: Number,

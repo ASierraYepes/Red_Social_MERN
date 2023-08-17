@@ -10,6 +10,7 @@ import UserImage from "components/UserImage";
 import FlexBetween from "components/FlexBetween";
 import WidgetWrapper from "components/WidgetWrapper";
 import ModalSkillsConfig from "components/ModalSkillsConfig";
+import ModalAboutMeConfig from "components/ModalAboutMeConfig";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -25,7 +26,8 @@ const UserWidget = ({ userId, picturePath }) => {
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalSkillsOpen, SetmodalSkillsOpen] = useState(false);
+  const [modalAboutMeOpen, SetmodalAboutMeOpen] = useState(false);
   const dispatch = useDispatch();
 
   const getUser = async () => {
@@ -56,15 +58,25 @@ const UserWidget = ({ userId, picturePath }) => {
     // impressions,
     friends,
     skills,
+    aboutMe,
   } = user;
 
-  const handleModalOpen = () => {
-    setModalOpen(true);
+  const ModalSkillsOpen = () => {
+    SetmodalSkillsOpen(true);
   };
 
-  const handleModalClose = () => {
-    setModalOpen(false);
-    window.location.reload();
+  const ModalSkillsClose = () => {
+    SetmodalSkillsOpen(false);
+    getUser();
+  };
+
+  const ModalAboutMeOpen = () => {
+    SetmodalAboutMeOpen(true);
+  };
+
+  const ModalAboutMeClose = () => {
+    SetmodalAboutMeOpen(false);
+    getUser();
   };
 
   return (
@@ -124,7 +136,7 @@ const UserWidget = ({ userId, picturePath }) => {
                   <Typography fontSize="1rem" color={main} fontWeight="500" mb="1rem">
                     Habilidades
                   </Typography>
-                  <IconButton onClick={handleModalOpen}>
+                  <IconButton onClick={ModalSkillsOpen}>
                     <EditOutlined />
                   </IconButton>
                 </Box>
@@ -176,10 +188,10 @@ const UserWidget = ({ userId, picturePath }) => {
               <Divider />
               <Box p="1rem 0">
                 <Box display="flex" alignItems="center" gap="10rem" mb="0.1rem">
-                  <Typography fontSize="1rem" color={main} fontWeight="500" mb="1rem">
+                  <Typography fontSize="0.8rem" color={main} fontWeight="500" mb="1rem">
                     Agregar habilidades
                   </Typography>
-                  <IconButton onClick={handleModalOpen}>
+                  <IconButton onClick={ModalSkillsOpen}>
                     <Add />
                   </IconButton>
                 </Box>
@@ -188,7 +200,74 @@ const UserWidget = ({ userId, picturePath }) => {
           ) : (undefined)}
         </>
       )}
-      <ModalSkillsConfig isOpen={modalOpen} onClose={handleModalClose} />
+
+      {/* FOUR ROW */}
+      {aboutMe !== "" ? (
+        <>
+          {_id === `${userId}` ? (
+            <>
+              <Divider />
+              <Box p="1rem 0">
+                <Box display="flex" alignItems="center" gap="10rem" mb="0.1rem">
+                  <Typography fontSize="1rem" color={main} fontWeight="500" mb="1rem">
+                    Acerca de mí
+                  </Typography>
+                  <IconButton onClick={ModalAboutMeOpen}>
+                    <EditOutlined />
+                  </IconButton>
+                </Box>
+                <FlexBetween gap="1rem" mb="0.5rem">
+                  <FlexBetween gap="1rem">
+                    <Box >
+                      <Typography color={main} fontWeight="500">
+                        {aboutMe}
+                      </Typography>
+                    </Box>
+                  </FlexBetween>
+                </FlexBetween>
+              </Box>
+            </>
+          ) : (
+            <>
+              <Divider />
+              <Box p="1rem 0">
+                <Box display="flex" alignItems="center" gap="10rem" mb="0.1rem">
+                  <Typography fontSize="1rem" color={main} fontWeight="500" mb="1rem">
+                    Acerca de mí
+                  </Typography>
+                </Box>
+                <FlexBetween gap="1rem" mb="0.5rem">
+                  <FlexBetween gap="1rem">
+                    <Box >
+                      <Typography color={main} fontWeight="500">
+                        {aboutMe}
+                      </Typography>
+                    </Box>
+                  </FlexBetween>
+                </FlexBetween>
+              </Box>
+            </>
+          )}
+        </>
+      ) : (
+        <>
+          {_id === `${userId}` ? (
+            <>
+              <Divider />
+              <Box p="1rem 0">
+                <Box display="flex" alignItems="center" gap="10rem" mb="0.1rem">
+                  <Typography fontSize="0.8rem" color={main} fontWeight="500" mb="1rem">
+                    Agregar acerca de mí
+                  </Typography>
+                  <IconButton onClick={ModalAboutMeOpen}>
+                    <Add />
+                  </IconButton>
+                </Box>
+              </Box>
+            </>
+          ) : (undefined)}
+        </>
+      )}
 
 
       {/* FIVE ROW */}
@@ -206,8 +285,8 @@ const UserWidget = ({ userId, picturePath }) => {
           </Typography>
         </FlexBetween>
       </Box>
-
-      <Divider /> */}
+      */}
+      {/* <Divider />  */}
 
       {/* FOURTH ROW */}
       {/* <Box p="1rem 0">
@@ -241,6 +320,8 @@ const UserWidget = ({ userId, picturePath }) => {
           <EditOutlined sx={{ color: main }} />
         </FlexBetween>
       </Box> */}
+      <ModalSkillsConfig isOpen={modalSkillsOpen} onClose={ModalSkillsClose} />
+      <ModalAboutMeConfig isOpen={modalAboutMeOpen} onClose={ModalAboutMeClose} />
     </WidgetWrapper>
   );
 };

@@ -20,44 +20,51 @@ const ModalSkillsConfig = ({ isOpen, onClose }) => {
   const { palette } = useTheme();
   const [technology, setTechnology] = useState('');
   const [percentage, setPercentage] = useState('');
-  const [addedValues, setAddedValues] = useState([]);
+  const [addedSkills, setAddedSkills] = useState([]);
   const token = useSelector((state) => state.token);
   const loggedInUserId = useSelector((state) => state.user._id);
   const sKillsUser = useSelector((state) => state.UserIdCurrent.skills);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setAddedValues(sKillsUser)
+    setAddedSkills(sKillsUser)
   }, [sKillsUser]); 
 
   const AddValue = () => {
     if (technology && percentage) {
-      setAddedValues((prevValues) => [...prevValues, {technology, percentage }]);   
+      setAddedSkills((prevValues) => [...prevValues, {technology, percentage }]);   
     }
     setTechnology('');
     setPercentage('');
   };
 
   const DeleteValue = (index) => {
-    const newValues = [...addedValues];   
+    const newValues = [...addedSkills];   
     newValues.splice(index, 1);
-    setAddedValues(newValues);
+    setAddedSkills(newValues);
   }
 
   const handleSave = async () => {
-    const response = await fetch(`${URL}/users/${loggedInUserId}`, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ addedValues }),
-    })
+    try {
+      const response = await fetch(`${URL}/users/${loggedInUserId}`, 
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ addedSkills }),
+      })
+  
+      const updateUser = await response.json()
+      dispatch(setUserIdChange({ userId: updateUser }));
+      setAddedSkills([]);
+      onClose();
 
-    const updateUser = await response.json()
-    dispatch(setUserIdChange({ userId: updateUser }));
-    setAddedValues([]);
-    onClose();
+    }
+    catch (error) {
+      console.error("Error:", error.message);
+    }
   };
 
   return (
@@ -108,10 +115,10 @@ const ModalSkillsConfig = ({ isOpen, onClose }) => {
         <IconButton onClick={AddValue}>
           <Add />
         </IconButton>
-        {addedValues.length !== 0 ? (
+        {addedSkills.length !== 0 ? (
           <>
             <List sx={{ marginTop: '0.1rem' }}>
-              {addedValues.map((value, index) => (
+              {addedSkills.map((value, index) => (
                 <ListItem key={index} sx={{ marginTop: '-1.9rem' }}>
                   <ListItemText 
                     primary={`${value.technology} - ${value.percentage}%`}

@@ -65,26 +65,30 @@ export const addRemoveFriend = async (req, res) => {
 export const addSkillUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { addedValues } = req.body;
+    const { addedSkills } = req.body;
     
     const user = await User.findById(id);
-
-    if (user.skills.length = 0) {
-      for ( const itemSkill of addedValues) {
-        user.skills.push(itemSkill);
-      }
-    }
-    else{
-      user.skills.remove()
-      for ( const itemSkill of addedValues) {
-        user.skills.push(itemSkill);
-      }
-    }
+    user.skills = addedSkills;
 
     const saveSkills = await user.save();
     res.status(200).json(saveSkills);
   
   } catch (error) {
-    res.status(404).json({ message: err.message });
+    res.status(404).json({ message: error.message });
+  }
+}
+
+export const addAboutMeUser = async (req, res) => {
+  try {
+    const { id, aboutMe } = req.params;
+    
+    const user = await User.findById(id);
+    user.aboutMe = aboutMe;
+
+    const saveAboutMe = await user.save();
+    res.status(200).json(saveAboutMe);
+
+  } catch (error) {
+    res.status(404).json({ message: error.message });
   }
 }
