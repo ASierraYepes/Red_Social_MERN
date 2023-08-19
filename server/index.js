@@ -53,9 +53,9 @@ app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
 
 /* MONGOOSE SETUP */
-const PORT =  3001 || 6001;
+const PORT = process.env.PORT || 6001;
 mongoose
-  .connect('mongodb+srv://asierra:Andr3s9403$@cluster0.ijysc4d.mongodb.net/?retryWrites=true&w=majority', {
+  .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
