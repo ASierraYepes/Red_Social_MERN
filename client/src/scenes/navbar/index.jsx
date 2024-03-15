@@ -173,7 +173,7 @@ const Navbar = () => {
               <ListItemIcon>
                 <EmojiEmotions fontSize="small" />
               </ListItemIcon>
-               Yo
+                Yo
             </MenuItem>
             <Divider />
             <MenuItem onClick={handleClose}>

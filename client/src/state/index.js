@@ -43,18 +43,17 @@ export const authSlice = createSlice({
     setUserId: (state, action) => {
       state.UserIdCurrent = action.payload.UserIdCurrent
     },
-    setUserIdChange: (state, action ) => {
-      if (Array.isArray(state.UserIdCurrent)){
+    setUserIdChange: (state, action) => {
+      if (Array.isArray(state.UserIdCurrent)) {
         const updateUser = state.UserIdCurrent.map((userId) => {
           if (userId === action.payload.userId._id) return action.payload.userId;
           return userId;
         });
         state.UserIdCurrent = updateUser;
       }
-    } 
+    }
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost, setUserId, setUserIdChange} =
-  authSlice.actions;
+export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost, setUserId, setUserIdChange } = authSlice.actions;
 export default authSlice.reducer;
